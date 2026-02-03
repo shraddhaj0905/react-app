@@ -1,20 +1,13 @@
-import { useEffect, useState } from "react";
-import { generateClient } from "aws-amplify/data";
-
-const client = generateClient();
+import { useState } from "react";
 
 function App() {
-  const [todos, setTodos] = useState([]);
-
-  useEffect(() => {
-    const sub = client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-    return () => sub.unsubscribe();
-  }, []);
+  const [todos, setTodos] = useState([
+    { id: "1", content: "Example todo (local only)" },
+  ]);
 
   function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+    const content = window.prompt("Todo content");
+    if (content) setTodos((t) => [...t, { id: Date.now().toString(), content }]);
   }
 
   return (
@@ -27,7 +20,7 @@ function App() {
         ))}
       </ul>
       <div>
-        🥳 App successfully hosted. Try creating a new todo.
+        🥳 App successfully hosted. This demo uses local state only (no backend).
         <br />
         <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
           Review next step of this tutorial.
